@@ -21,23 +21,34 @@ class CounterAsyncBloc extends PageBloc<CounterAsyncEvent,
           emit) async {
     switch (event) {
       case Click():
+        emit(state.copyWith(
+          uiState: state.uiState.copyWith(isLoading: true),
+        ));
         // Simulate asynchronous delay
         await Future.delayed(const Duration(seconds: 1));
         if (Random().nextBool()) {
           // Simulate error
           emit(state.copyWith(
-              uiEvent: _$(ShowErrorDialog(error: Exception("Error!")))));
+            uiEvent: _$(ShowErrorDialog(error: Exception("Error!"))),
+            uiState: state.uiState.copyWith(isLoading: false),
+          ));
         } else {
           final counter = state.uiState.counter;
-          if (counter == 3) {
+          if ((counter + 1) == 3) {
             emit(state.copyWith(
               uiEvent: const _$(
                   ShowAlertDialog(title: "Hooray!!!", message: "You got 3")),
-              uiState: CounterAsyncStateUiState(counter: counter + 1),
+              uiState: state.uiState.copyWith(
+                counter: counter + 1,
+                isLoading: false,
+              ),
             ));
           } else {
             emit(state.copyWith(
-              uiState: CounterAsyncStateUiState(counter: counter + 1),
+              uiState: state.uiState.copyWith(
+                counter: counter + 1,
+                isLoading: false,
+              ),
             ));
           }
         }

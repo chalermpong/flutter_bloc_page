@@ -14,8 +14,8 @@ class CounterAsyncPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => CounterAsyncBloc(
-          const PageBlocState(uiState: CounterAsyncStateUiState(counter: 1))),
+      create: (BuildContext context) => CounterAsyncBloc(const PageBlocState(
+          uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
       child: Builder(
         builder: (context) {
           final bloc = BlocProvider.of<CounterAsyncBloc>(context);
@@ -29,11 +29,11 @@ class CounterAsyncPage extends StatelessWidget {
                       const SizedBox(height: 40),
                       Text("Counter: ${uiState.counter}"),
                       TextButton(
-                          onPressed: () {
-                            print("---> bloc: ${bloc.hashCode}");
-                            bloc.add(const NewEvent(blocEvent: Click()));
-                            //bloc.addPageEvent(const Click());
-                          },
+                          onPressed: uiState.isLoading
+                              ? null
+                              : () {
+                                  bloc.addPageEvent(const Click());
+                                },
                           child: const Text("Click me!")),
                     ],
                   ));
