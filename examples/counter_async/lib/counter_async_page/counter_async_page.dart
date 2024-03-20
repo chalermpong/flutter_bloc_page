@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:counter_async/counter_async_page/bloc/counter_async_bloc.dart';
 import 'package:counter_async/counter_async_page/bloc/counter_async_state.dart';
+import 'package:counter_async/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_page/flutter_bloc_page.dart';
@@ -14,13 +15,14 @@ class CounterAsyncPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => CounterAsyncBloc(const PageBlocState(
+      create: (BuildContext context) => CounterAsyncBloc(PageBlocState(
           uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
       child: Builder(
         builder: (context) {
           final bloc = BlocProvider.of<CounterAsyncBloc>(context);
-          return PageBlocConsumer(
-              pageBloc: bloc,
+          return PageBlocConsumer<CounterAsyncBloc, CounterAsyncStateUiEvent,
+                  CounterAsyncStateUiState>(
+              bloc: bloc,
               uiEventListener: (context, uiEvent) async {
                 _handleUiEvent(context, uiEvent);
               },
@@ -32,9 +34,18 @@ class CounterAsyncPage extends StatelessWidget {
                           onPressed: uiState.isLoading
                               ? null
                               : () {
-                                  bloc.addPageEvent(const Click());
+                                  bloc.add(const Click());
                                 },
                           child: const Text("Click me!")),
+                      TextButton(
+                          onPressed: () {
+                            mainNavKey.currentState!.push(MaterialPageRoute(
+                              settings:
+                                  const RouteSettings(name: "another_page"),
+                              builder: (context) => const CounterAsyncPage(),
+                            ));
+                          },
+                          child: const Text("Open another page")),
                     ],
                   ));
         },
@@ -54,27 +65,6 @@ class CounterAsyncPage extends StatelessWidget {
                     child: ListBody(
                       children: <Widget>[
                         Text(uiEvent.message),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ));
-      case ShowErrorDialog():
-        return showAdaptiveDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text("Error"),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[
-                        Text(uiEvent.error.toString()),
                       ],
                     ),
                   ),

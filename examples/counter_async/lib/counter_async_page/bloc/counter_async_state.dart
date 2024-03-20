@@ -4,7 +4,7 @@ class CounterAsyncStateUiState extends Equatable {
   final int counter;
   final bool isLoading;
 
-  const CounterAsyncStateUiState({
+  CounterAsyncStateUiState({
     required this.counter,
     required this.isLoading,
   });
@@ -23,25 +23,13 @@ class CounterAsyncStateUiState extends Equatable {
   }
 }
 
-sealed class CounterAsyncStateUiEvent extends Equatable {
-  const CounterAsyncStateUiEvent();
+sealed class CounterAsyncStateUiEvent {
+  CounterAsyncStateUiEvent();
 }
 
 class ShowAlertDialog extends CounterAsyncStateUiEvent {
   final String title;
   final String message;
 
-  const ShowAlertDialog({required this.title, required this.message});
-
-  @override
-  List<Object?> get props => [title, message];
-}
-
-class ShowErrorDialog extends CounterAsyncStateUiEvent {
-  final Exception error;
-
-  const ShowErrorDialog({required this.error});
-
-  @override
-  List<Object?> get props => [error];
+  ShowAlertDialog({required this.title, required this.message});
 }

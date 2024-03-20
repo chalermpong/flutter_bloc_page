@@ -1,42 +1,38 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_page/src/page_bloc.dart';
-import 'package:flutter_bloc_page/src/page_bloc_event.dart';
 import 'package:flutter_bloc_page/src/page_bloc_state.dart';
 
-/// [BlocConsumer] to be used with [pageBloc].
+/// [PageBlocConsumer] extended [BlocConsumer] for using with [PageBlocState].
 ///
-/// It triggers [uiEventListener] on new [UiEvent] and clears it automatically.
-/// So [UiEvent] will be executed only once.
+/// [uiEventListener] is called on new [UiEvent] (`identical` returned false).
+/// So event listener is called even when new event == old event.
 ///
-/// It also triggers [uiBuilder] on [UiState] changed.
-class PageBlocConsumer<BlocEvent, UiEvent extends Equatable,
-        UiState extends Equatable>
-    extends BlocConsumer<StateStreamable<PageBlocState<UiEvent, UiState>>,
-        PageBlocState<UiEvent, UiState>> {
+/// *IMPORTANT* Avoid using `const` constructor on [UiEvent] because
+/// `uiEventListener` will not be called again on identical event.
+///
+/// [uiBuilder] is called on [UiState] changed (== returned false).
+class PageBlocConsumer<
+    B extends StateStreamable<PageBlocState<UiEvent, UiState>>,
+    UiEvent,
+    UiState> extends BlocConsumer<B, PageBlocState<UiEvent, UiState>> {
   /// Create new instance
   PageBlocConsumer({
     super.key,
-    required this.pageBloc,
+    super.bloc,
     required this.uiEventListener,
     required this.uiBuilder,
   }) : super(
-            bloc: pageBloc,
-            listenWhen: (prev, current) => prev.uiEvent != current.uiEvent,
+            listenWhen: (prev, current) =>
+                !identical(prev.uiEvent, current.uiEvent),
             listener: (context, state) {
               final uiEvent = state.uiEvent;
               if (uiEvent != null) {
                 uiEventListener(context, uiEvent);
-                pageBloc.add(ClearUiEvent(uiEvent: uiEvent));
               }
             },
             buildWhen: (prev, current) => prev.uiState != current.uiState,
             builder: (context, state) => uiBuilder(context, state.uiState));
 
-  /// [PageBloc] to be used with.
-  final PageBloc<BlocEvent, UiEvent, UiState> pageBloc;
-
-  /// Takes the `BuildContext` along with the [PageBloc] `uiEvent`
+  /// Takes the `BuildContext` along with the [PageBlocState] `uiEvent`
   /// and is responsible for executing in response to new `uiEvent`.
   final BlocWidgetListener<UiEvent> uiEventListener;
 
