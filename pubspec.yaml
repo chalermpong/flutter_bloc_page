@@ -1,7 +1,7 @@
 name: flutter_bloc_page
 description: "Helper package for creating Bloc for controlling one UI Page."
 version: 1.0.0
-homepage:
+repository: https://github.com/chalermpong/flutter_bloc_page
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

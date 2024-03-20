@@ -1,39 +1,66 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package counter_async_page](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Helper package for creating Bloc for controlling one UI Page.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Build on top of flutter_bloc `BlocConsumer` widget, flutter_bloc_page provides better separation
+between UI state
+and UI event.
+
+UI state will be last until bloc emit a new state.
+
+While UI event (e.g. show snackbar, show dialog, open another page) should be handled only once.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+### Pubspec
+
+```yaml
+dependencies:
+  flutter_bloc_page: ^1.0.0
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+When create a page, define `UiEvent` class to represent event that can happen.
+
+Let say it will be 2 events: showDialog and openAnotherPage. You can define `UiEvent` class like
+this.
 
 ```dart
-const like = 'sample';
+sealed class UiEvent {}
+
+class ShowDialog extends UiEvent {
+  // Fields
+}
+
+class OpenAnotherPage extends UiEvent {
+  // Fields
+}
 ```
 
-## Additional information
+*Note* Avoid having `const` constructor in `UiEvent` class. `PageBlocConsumer` uses `identical` for
+checking arrival of new UiEvent.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Create a Bloc with `state` of type `PageBlocState`. Implement your Bloc logic as normal bloc.
+```dart
+class YourBloc extends Bloc<Event, PageBlocState<UiEvent, UiState>> {
+  // Your implementation
+}
+```
+
+Now you can use `PageBlocConsumer`:
+
+```dart
+PageBlocConsumer<YourBloc, UiEvent, UiState>
+(
+uiEventListener: (context, uiEvent) async {
+// Handle UiEvent
+},
+uiBuilder: (context, uiState) {
+// Build your widget from UiState  
+}
+);
+```
+
+
+
