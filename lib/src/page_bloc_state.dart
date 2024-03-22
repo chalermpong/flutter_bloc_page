@@ -17,7 +17,7 @@ class PageBlocState<UiEvent, UiState> extends Equatable {
   final UiState uiState;
 
   /// Create a new instance with [uiEvent] and [uiState]
-  PageBlocState({this.uiEvent, required this.uiState});
+  const PageBlocState({this.uiEvent, required this.uiState});
 
   /// Copy this instance. Overriding [uiEvent] and [uiState] if specific value
   /// was given.

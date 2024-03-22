@@ -149,6 +149,7 @@ typedef TestBlocConsumer = PageBlocConsumer<MockBloc, UiEvent, UiState>;
 class UiEvent extends Equatable {
   final String value;
 
+  // ignore: prefer_const_constructors
   UiEvent({required this.value});
 
   @override
@@ -158,7 +159,7 @@ class UiEvent extends Equatable {
 class UiState extends Equatable {
   final String value;
 
-  UiState({required this.value});
+  const UiState({required this.value});
 
   @override
   List<Object?> get props => [value];
