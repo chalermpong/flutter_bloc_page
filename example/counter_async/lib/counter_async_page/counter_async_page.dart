@@ -15,8 +15,8 @@ class CounterAsyncPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => CounterAsyncBloc(PageBlocState(
-          uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
+      create: (BuildContext context) => CounterAsyncBloc(
+          const PageBlocState(uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
       child: Builder(
         builder: (context) {
           final bloc = BlocProvider.of<CounterAsyncBloc>(context);

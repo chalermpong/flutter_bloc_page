@@ -4,7 +4,7 @@ class CounterAsyncStateUiState extends Equatable {
   final int counter;
   final bool isLoading;
 
-  CounterAsyncStateUiState({
+  const CounterAsyncStateUiState({
     required this.counter,
     required this.isLoading,
   });
