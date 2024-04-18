@@ -105,10 +105,10 @@ void main() {
       });
 
       test('Not equal when uiEvent not identical', () {
-        final state1 =
-            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        final state2 =
-            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state1 = PageBlocState<MyUIEvent, String>(
+            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state2 = PageBlocState<MyUIEvent, String>(
+            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
         expect(state1.hashCode == state2.hashCode, false);
         expect(state1 == state2, false);
       });

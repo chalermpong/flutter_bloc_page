@@ -41,5 +41,6 @@ class PageBlocState<UiEvent, UiState> {
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ mapPropsToHashCode([identityHashCode(uiEvent), uiState]);
+      runtimeType.hashCode ^
+      mapPropsToHashCode([identityHashCode(uiEvent), uiState]);
 }

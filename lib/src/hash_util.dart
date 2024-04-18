@@ -1,5 +1,6 @@
 /// Returns a `hashCode` for [props].
-int mapPropsToHashCode(Iterable? props) => _finish(props == null ? 0 : props.fold(0, _combine));
+int mapPropsToHashCode(Iterable? props) =>
+    _finish(props == null ? 0 : props.fold(0, _combine));
 
 /// Jenkins Hash Functions
 /// https://en.wikipedia.org/wiki/Jenkins_hash_function
