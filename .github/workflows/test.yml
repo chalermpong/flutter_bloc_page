@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Analyze and Test
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Clone repository
