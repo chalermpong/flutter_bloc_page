@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
@@ -149,7 +152,6 @@ typedef TestBlocConsumer = PageBlocConsumer<MockBloc, UiEvent, UiState>;
 class UiEvent extends Equatable {
   final String value;
 
-  // ignore: prefer_const_constructors
   UiEvent({required this.value});
 
   @override

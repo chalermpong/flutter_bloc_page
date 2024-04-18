@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: unrelated_type_equality_checks
+
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc_page/flutter_bloc_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nullable_absent/nullable_absent.dart';
@@ -61,5 +65,62 @@ void main() {
         expect(identical(state, copied), false);
       });
     });
+
+    group('Hashcode and ==', () {
+      test('Equal value', () {
+        final state1 = PageBlocState<String, String>(uiState: 'uiState');
+        final state2 = PageBlocState<String, String>(uiState: 'uiState');
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
+      });
+
+      test('Equal List', () {
+        final state1 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
+        final state2 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
+        expect(state1.hashCode == state2.hashCode, false);
+        expect(state1 == state2, false);
+      });
+
+      test('Not equal when different type', () {
+        final state1 = PageBlocState<String, String>(uiState: 'uiState');
+        final state2 = PageBlocState<int, String>(uiState: 'uiState');
+        expect(state1.hashCode == state2.hashCode, false);
+        expect(state1 == state2, false);
+      });
+
+      test('Not equal when different value', () {
+        final state1 = PageBlocState<String, String>(uiState: 'uiState');
+        final state2 = PageBlocState<String, String>(uiState: 'uiState1');
+        expect(state1.hashCode == state2.hashCode, false);
+        expect(state1 == state2, false);
+      });
+
+      test('Equal when uiEvent identical', () {
+        final state1 = PageBlocState<MyUIEvent, String>(
+            uiEvent: const MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state2 = PageBlocState<MyUIEvent, String>(
+            uiEvent: const MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
+      });
+
+      test('Not equal when uiEvent not identical', () {
+        final state1 = PageBlocState<MyUIEvent, String>(
+            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state2 = PageBlocState<MyUIEvent, String>(
+            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.hashCode == state2.hashCode, false);
+        expect(state1 == state2, false);
+      });
+    });
   });
+}
+
+class MyUIEvent extends Equatable {
+  final String text;
+
+  const MyUIEvent({required this.text});
+
+  @override
+  List<Object?> get props => [text];
 }
