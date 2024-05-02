@@ -113,6 +113,15 @@ void main() {
         expect(state1 == state2, false);
       });
     });
+
+    group('toString', () {
+      test('Meaningful toString', () {
+        final state1 = PageBlocState<MyUIEvent, String>(
+            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.toString(),
+            'PageBlocState<MyUIEvent, String>(event: MyUIEvent(test), state: uiState)');
+      });
+    });
   });
 }
 
@@ -123,4 +132,7 @@ class MyUIEvent extends Equatable {
 
   @override
   List<Object?> get props => [text];
+
+  @override
+  bool? get stringify => true;
 }

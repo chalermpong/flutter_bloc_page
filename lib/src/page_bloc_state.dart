@@ -43,4 +43,9 @@ class PageBlocState<UiEvent, UiState> {
   int get hashCode =>
       runtimeType.hashCode ^
       mapPropsToHashCode([identityHashCode(uiEvent), uiState]);
+
+  @override
+  String toString() {
+    return '$runtimeType(event: $uiEvent, state: $uiState)';
+  }
 }
