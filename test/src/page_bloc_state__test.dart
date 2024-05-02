@@ -27,21 +27,18 @@ void main() {
       });
       test('null -> value', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(2));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(2));
         expect(copied, _PB(uiEvent: 2, uiState: 'uiState'));
       });
       test('value -> value', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(1));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(1));
         expect(copied, state);
         expect(identical(state, copied), false);
       });
       test('value -> newValue', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(2));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(2));
         expect(copied, _PB(uiEvent: 2, uiState: 'uiState'));
       });
       test('value -> null', () {
@@ -105,12 +102,21 @@ void main() {
       });
 
       test('Not equal when uiEvent not identical', () {
-        final state1 = PageBlocState<MyUIEvent, String>(
-            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        final state2 = PageBlocState<MyUIEvent, String>(
-            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state1 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state2 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
         expect(state1.hashCode == state2.hashCode, false);
         expect(state1 == state2, false);
+      });
+    });
+
+    group('toString', () {
+      test('Meaningful toString', () {
+        final state1 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.toString(),
+            'PageBlocState<MyUIEvent, String>(event: MyUIEvent(test), state: uiState)');
       });
     });
   });
@@ -123,4 +129,7 @@ class MyUIEvent extends Equatable {
 
   @override
   List<Object?> get props => [text];
+
+  @override
+  bool? get stringify => true;
 }
