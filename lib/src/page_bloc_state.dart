@@ -1,4 +1,4 @@
-import 'package:flutter_bloc_page/src/hash_util.dart';
+import 'package:equatable/equatable.dart';
 import 'package:nullable_absent/nullable_absent.dart';
 
 /// State to be used with [PageBlocConsumer]
@@ -9,7 +9,7 @@ import 'package:nullable_absent/nullable_absent.dart';
 /// dialog, show snackbar, open another page)
 ///
 /// [UiState] represents state of UI.
-class PageBlocState<UiEvent, UiState> {
+class PageBlocState<UiEvent, UiState> extends Equatable {
   /// Event to be handled by UI.
   final UiEvent? uiEvent;
 
@@ -32,20 +32,8 @@ class PageBlocState<UiEvent, UiState> {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PageBlocState<UiEvent, UiState> &&
-          runtimeType == other.runtimeType &&
-          identical(uiEvent, other.uiEvent) &&
-          uiState == other.uiState);
+  List<Object?> get props => [uiEvent, uiState];
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      mapPropsToHashCode([identityHashCode(uiEvent), uiState]);
-
-  @override
-  String toString() {
-    return '$runtimeType(event: $uiEvent, state: $uiState)';
-  }
+  bool? get stringify => true;
 }

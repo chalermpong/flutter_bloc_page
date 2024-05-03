@@ -27,21 +27,18 @@ void main() {
       });
       test('null -> value', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(2));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(2));
         expect(copied, _PB(uiEvent: 2, uiState: 'uiState'));
       });
       test('value -> value', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(1));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(1));
         expect(copied, state);
         expect(identical(state, copied), false);
       });
       test('value -> newValue', () {
         final state = _PB(uiEvent: 1, uiState: 'uiState');
-        final PageBlocState<int, String> copied =
-            state.copyWith(uiEvent: const NullableAbsent(2));
+        final PageBlocState<int, String> copied = state.copyWith(uiEvent: const NullableAbsent(2));
         expect(copied, _PB(uiEvent: 2, uiState: 'uiState'));
       });
       test('value -> null', () {
@@ -77,8 +74,8 @@ void main() {
       test('Equal List', () {
         final state1 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
         final state2 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
-        expect(state1.hashCode == state2.hashCode, false);
-        expect(state1 == state2, false);
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
       });
 
       test('Not equal when different type', () {
@@ -105,21 +102,20 @@ void main() {
       });
 
       test('Not equal when uiEvent not identical', () {
-        final state1 = PageBlocState<MyUIEvent, String>(
-            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        final state2 = PageBlocState<MyUIEvent, String>(
-            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        expect(state1.hashCode == state2.hashCode, false);
-        expect(state1 == state2, false);
+        final state1 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        final state2 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
       });
     });
 
     group('toString', () {
       test('Meaningful toString', () {
-        final state1 = PageBlocState<MyUIEvent, String>(
-            uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        expect(state1.toString(),
-            'PageBlocState<MyUIEvent, String>(event: MyUIEvent(test), state: uiState)');
+        final state1 =
+            PageBlocState<MyUIEvent, String>(uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
+        expect(state1.toString(), 'PageBlocState<MyUIEvent, String>(MyUIEvent(test), uiState)');
       });
     });
   });

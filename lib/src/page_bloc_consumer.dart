@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_page/src/page_bloc_cubit.dart';
 import 'package:flutter_bloc_page/src/page_bloc_state.dart';
 
 /// [PageBlocConsumer] extended [BlocConsumer] for using with [PageBlocState].
@@ -10,10 +11,8 @@ import 'package:flutter_bloc_page/src/page_bloc_state.dart';
 /// `uiEventListener` will not be called again on identical event.
 ///
 /// [uiBuilder] is called on [UiState] changed (== returned false).
-class PageBlocConsumer<
-    B extends StateStreamable<PageBlocState<UiEvent, UiState>>,
-    UiEvent,
-    UiState> extends BlocConsumer<B, PageBlocState<UiEvent, UiState>> {
+class PageBlocConsumer<B extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState>,
+    UiEvent, UiState> extends BlocConsumer<B, PageBlocState<UiEvent, UiState>> {
   /// Create new instance
   PageBlocConsumer({
     super.key,
@@ -22,12 +21,13 @@ class PageBlocConsumer<
     required this.uiBuilder,
   }) : super(
             listenWhen: (prev, current) =>
-                !identical(prev.uiEvent, current.uiEvent),
+                current.uiEvent != null && current.uiEvent != prev.uiEvent,
             listener: (context, state) {
               final uiEvent = state.uiEvent;
               if (uiEvent != null) {
                 uiEventListener(context, uiEvent);
               }
+              (bloc ?? context.read<B>()).clearUIEvent();
             },
             buildWhen: (prev, current) => prev.uiState != current.uiState,
             builder: (context, state) => uiBuilder(context, state.uiState));
