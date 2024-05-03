@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_constructors_in_immutables
 
-import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 void main() {
-  late MockBloc bloc;
-  late StreamController<PageBlocState<UiEvent, UiState>> blocStream;
+  late _PageBlocCubit bloc;
   late UiEventCapture eventCapture;
   late UiStateCapture stateCapture;
 
@@ -22,22 +19,15 @@ void main() {
   });
 
   setUp(() {
-    bloc = MockBloc();
-    when(() => bloc.state)
-        .thenReturn(PageBlocState(uiState: UiState(value: "Hello")));
-    blocStream = StreamController<PageBlocState<UiEvent, UiState>>();
-    when(() => bloc.stream).thenAnswer((_) => blocStream.stream);
+    bloc = _PageBlocCubit(
+        PageBlocState<UiEvent, UiState>(uiState: UiState(value: 'Hello')));
     eventCapture = UiEventCapture();
     stateCapture = UiStateCapture();
   });
 
-  tearDown(() {
-    blocStream.close();
-  });
-
   group("Display UiState", () {
     testWidgets('Initial State', (tester) async {
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
         stateCapture: stateCapture,
@@ -49,14 +39,13 @@ void main() {
     });
 
     testWidgets('No build when UiState not changed', (tester) async {
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
         stateCapture: stateCapture,
       ));
       final event = UiEvent(value: "Event");
-      blocStream
-          .add(PageBlocState(uiEvent: event, uiState: UiState(value: "Hello")));
+      bloc.emitNewUiEvent(event);
       await tester.pumpAndSettle();
       final capturedEvent =
           verify(() => eventCapture.capture(captureAny())).captured;
@@ -67,7 +56,7 @@ void main() {
     });
 
     testWidgets('Build when UiState changed', (tester) async {
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
         stateCapture: stateCapture,
@@ -76,8 +65,7 @@ void main() {
       final capturedState1 =
           verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState1, [UiState(value: "Hello")]);
-
-      blocStream.add(PageBlocState(uiState: UiState(value: "Bye")));
+      bloc.emitNewUiState(UiState(value: "Bye"));
       await tester.pumpAndSettle();
       verifyNever(() => eventCapture.capture(captureAny()));
       final capturedState2 =
@@ -87,14 +75,13 @@ void main() {
 
     testWidgets('Listener is not called when UiEvent not changed',
         (tester) async {
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
         stateCapture: stateCapture,
       ));
       final event = UiEvent(value: "Event");
-      blocStream
-          .add(PageBlocState(uiEvent: event, uiState: UiState(value: "Hello")));
+      bloc.emitNewState(event, UiState(value: "Hello"));
       await tester.pumpAndSettle();
       final capturedEvent1 =
           verify(() => eventCapture.capture(captureAny())).captured;
@@ -103,8 +90,7 @@ void main() {
           verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState1, [UiState(value: "Hello")]);
 
-      blocStream
-          .add(PageBlocState(uiEvent: event, uiState: UiState(value: "Bye")));
+      bloc.emitNewUiState(UiState(value: "Bye"));
       await tester.pumpAndSettle();
 
       verifyNever(() => eventCapture.capture(captureAny()));
@@ -117,14 +103,13 @@ void main() {
 
     testWidgets('Listener is called even when new event equals to previous one',
         (tester) async {
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
         stateCapture: stateCapture,
       ));
       final event1 = UiEvent(value: "Event");
-      blocStream.add(
-          PageBlocState(uiEvent: event1, uiState: UiState(value: "Hello")));
+      bloc.emitNewState(event1, UiState(value: "Hello"));
       await tester.pumpAndSettle();
       final capturedEvent1 =
           verify(() => eventCapture.capture(captureAny())).captured;
@@ -134,8 +119,7 @@ void main() {
       expect(capturedState1, [UiState(value: "Hello")]);
 
       final event2 = UiEvent(value: "Event");
-      blocStream.add(
-          PageBlocState(uiEvent: event2, uiState: UiState(value: "Hello")));
+      bloc.emitNewState(event2, UiState(value: "Hello"));
       await tester.pumpAndSettle();
 
       expect(event1, event2);
@@ -147,7 +131,7 @@ void main() {
   });
 }
 
-typedef TestBlocConsumer = PageBlocConsumer<MockBloc, UiEvent, UiState>;
+typedef TestBlocConsumer = PageBlocConsumer<_PageBlocCubit, UiEvent, UiState>;
 
 class UiEvent extends Equatable {
   final String value;
@@ -167,8 +151,30 @@ class UiState extends Equatable {
   List<Object?> get props => [value];
 }
 
-class MockBloc extends Mock
-    implements Bloc<int, PageBlocState<UiEvent, UiState>> {}
+class _PageBlocCubit
+    extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState> {
+  _PageBlocCubit(super.initialState);
+
+  @override
+  PageBlocState<UiEvent, UiState> createStateWithoutUIEvent(
+      PageBlocState<UiEvent, UiState> state) {
+    return PageBlocState<UiEvent, UiState>(uiState: state.uiState);
+  }
+
+  void emitNewState(UiEvent event, UiState state) {
+    emit(PageBlocState<UiEvent, UiState>(uiEvent: event, uiState: state));
+  }
+
+  void emitNewUiEvent(UiEvent event) {
+    emit(PageBlocState<UiEvent, UiState>(
+        uiEvent: event, uiState: state.uiState));
+  }
+
+  void emitNewUiState(UiState state) {
+    emit(PageBlocState<UiEvent, UiState>(
+        uiEvent: this.state.uiEvent, uiState: state));
+  }
+}
 
 abstract class Capture<T> {
   void capture(T value);
@@ -178,25 +184,23 @@ class UiEventCapture extends Mock implements Capture<UiEvent> {}
 
 class UiStateCapture extends Mock implements Capture<UiState> {}
 
-class TestWidget extends StatelessWidget {
-  final MockBloc bloc;
+class _TestWidget extends StatelessWidget {
+  final _PageBlocCubit bloc;
   final UiEventCapture eventCapture;
   final UiStateCapture stateCapture;
 
-  const TestWidget(
-      {super.key,
-      required this.bloc,
+  const _TestWidget(
+      {required this.bloc,
       required this.eventCapture,
       required this.stateCapture});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BlocProvider<MockBloc>(
+      home: BlocProvider<_PageBlocCubit>(
         create: (context) => bloc,
         child: Builder(
           builder: (context) => TestBlocConsumer(
-            bloc: bloc,
             uiEventListener: (context, uiEvent) async {
               eventCapture.capture(uiEvent);
             },

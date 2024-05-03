@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unrelated_type_equality_checks
+// ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc_page/flutter_bloc_page.dart';
@@ -77,8 +78,8 @@ void main() {
       test('Equal List', () {
         final state1 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
         final state2 = PageBlocState<String, List<String>>(uiState: ['1', '2']);
-        expect(state1.hashCode == state2.hashCode, false);
-        expect(state1 == state2, false);
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
       });
 
       test('Not equal when different type', () {
@@ -109,8 +110,8 @@ void main() {
             uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
         final state2 = PageBlocState<MyUIEvent, String>(
             uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
-        expect(state1.hashCode == state2.hashCode, false);
-        expect(state1 == state2, false);
+        expect(state1.hashCode == state2.hashCode, true);
+        expect(state1 == state2, true);
       });
     });
 
@@ -119,7 +120,7 @@ void main() {
         final state1 = PageBlocState<MyUIEvent, String>(
             uiEvent: MyUIEvent(text: 'test'), uiState: 'uiState');
         expect(state1.toString(),
-            'PageBlocState<MyUIEvent, String>(event: MyUIEvent(test), state: uiState)');
+            'PageBlocState<MyUIEvent, String>(MyUIEvent(test), uiState)');
       });
     });
   });

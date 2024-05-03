@@ -1,3 +1,9 @@
+## 2.0.0
+
+BREAKING CHANGE
+
+- Refactor PageBlocConsumer
+
 ## 1.1.1
 
 - Improve toString of PageBlocState
