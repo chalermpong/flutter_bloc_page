@@ -13,8 +13,8 @@ class CounterAsyncPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => CounterAsyncCubit(
-          const PageBlocState(uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
+      create: (BuildContext context) => CounterAsyncCubit(const PageBlocState(
+          uiState: CounterAsyncStateUiState(isLoading: false, counter: 1))),
       child: Builder(
         builder: (context) {
           final bloc = BlocProvider.of<CounterAsyncCubit>(context);
@@ -37,7 +37,8 @@ class CounterAsyncPage extends StatelessWidget {
                       TextButton(
                           onPressed: () {
                             mainNavKey.currentState!.push(MaterialPageRoute(
-                              settings: const RouteSettings(name: "another_page"),
+                              settings:
+                                  const RouteSettings(name: "another_page"),
                               builder: (context) => const CounterAsyncPage(),
                             ));
                           },
@@ -49,7 +50,8 @@ class CounterAsyncPage extends StatelessWidget {
     );
   }
 
-  Future<void> _handleUiEvent(BuildContext context, CounterAsyncStateUiEvent uiEvent) async {
+  Future<void> _handleUiEvent(
+      BuildContext context, CounterAsyncStateUiEvent uiEvent) async {
     switch (uiEvent) {
       case ShowAlertDialog():
         return showAdaptiveDialog(

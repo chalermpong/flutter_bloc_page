@@ -11,8 +11,10 @@ import 'package:flutter_bloc_page/src/page_bloc_state.dart';
 /// `uiEventListener` will not be called again on identical event.
 ///
 /// [uiBuilder] is called on [UiState] changed (== returned false).
-class PageBlocConsumer<B extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState>,
-    UiEvent, UiState> extends BlocConsumer<B, PageBlocState<UiEvent, UiState>> {
+class PageBlocConsumer<
+    B extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState>,
+    UiEvent,
+    UiState> extends BlocConsumer<B, PageBlocState<UiEvent, UiState>> {
   /// Create new instance
   PageBlocConsumer({
     super.key,

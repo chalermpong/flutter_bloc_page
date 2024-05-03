@@ -23,7 +23,8 @@ class CounterAsyncCubit extends PageBlocCubit<
     final counter = state.uiState.counter;
     if ((counter + 1) % 2 == 0) {
       emit(state.copyWith(
-        uiEvent: _$(ShowAlertDialog(title: "Hooray!!!", message: "You got even number")),
+        uiEvent: _$(ShowAlertDialog(
+            title: "Hooray!!!", message: "You got even number")),
         uiState: state.uiState.copyWith(
           counter: counter + 1,
           isLoading: false,
@@ -40,8 +41,10 @@ class CounterAsyncCubit extends PageBlocCubit<
   }
 
   @override
-  PageBlocState<CounterAsyncStateUiEvent, CounterAsyncStateUiState> createStateWithoutUIEvent(
-      PageBlocState<CounterAsyncStateUiEvent, CounterAsyncStateUiState> state) {
+  PageBlocState<CounterAsyncStateUiEvent, CounterAsyncStateUiState>
+      createStateWithoutUIEvent(
+          PageBlocState<CounterAsyncStateUiEvent, CounterAsyncStateUiState>
+              state) {
     return state.copyWith(uiEvent: const NullableAbsent(null));
   }
 }

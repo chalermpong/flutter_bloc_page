@@ -19,7 +19,8 @@ void main() {
   });
 
   setUp(() {
-    bloc = _PageBlocCubit(PageBlocState<UiEvent, UiState>(uiState: UiState(value: 'Hello')));
+    bloc = _PageBlocCubit(
+        PageBlocState<UiEvent, UiState>(uiState: UiState(value: 'Hello')));
     eventCapture = UiEventCapture();
     stateCapture = UiStateCapture();
   });
@@ -32,7 +33,8 @@ void main() {
         stateCapture: stateCapture,
       ));
       verifyNever(() => eventCapture.capture(captureAny()));
-      final capturedState = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState, [UiState(value: "Hello")]);
     });
 
@@ -45,9 +47,11 @@ void main() {
       final event = UiEvent(value: "Event");
       bloc.emitNewUiEvent(event);
       await tester.pumpAndSettle();
-      final capturedEvent = verify(() => eventCapture.capture(captureAny())).captured;
+      final capturedEvent =
+          verify(() => eventCapture.capture(captureAny())).captured;
       expect(capturedEvent, [event]);
-      final capturedState = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState, [UiState(value: "Hello")]);
     });
 
@@ -58,16 +62,19 @@ void main() {
         stateCapture: stateCapture,
       ));
       verifyNever(() => eventCapture.capture(captureAny()));
-      final capturedState1 = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState1 =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState1, [UiState(value: "Hello")]);
       bloc.emitNewUiState(UiState(value: "Bye"));
       await tester.pumpAndSettle();
       verifyNever(() => eventCapture.capture(captureAny()));
-      final capturedState2 = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState2 =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState2, [UiState(value: "Bye")]);
     });
 
-    testWidgets('Listener is not called when UiEvent not changed', (tester) async {
+    testWidgets('Listener is not called when UiEvent not changed',
+        (tester) async {
       await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
@@ -76,22 +83,26 @@ void main() {
       final event = UiEvent(value: "Event");
       bloc.emitNewState(event, UiState(value: "Hello"));
       await tester.pumpAndSettle();
-      final capturedEvent1 = verify(() => eventCapture.capture(captureAny())).captured;
+      final capturedEvent1 =
+          verify(() => eventCapture.capture(captureAny())).captured;
       expect(capturedEvent1, [event]);
-      final capturedState1 = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState1 =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState1, [UiState(value: "Hello")]);
 
       bloc.emitNewUiState(UiState(value: "Bye"));
       await tester.pumpAndSettle();
 
       verifyNever(() => eventCapture.capture(captureAny()));
-      final capturedState2 = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState2 =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState2, [
         UiState(value: "Bye"),
       ]);
     });
 
-    testWidgets('Listener is called even when new event equals to previous one', (tester) async {
+    testWidgets('Listener is called even when new event equals to previous one',
+        (tester) async {
       await tester.pumpWidget(_TestWidget(
         bloc: bloc,
         eventCapture: eventCapture,
@@ -100,9 +111,11 @@ void main() {
       final event1 = UiEvent(value: "Event");
       bloc.emitNewState(event1, UiState(value: "Hello"));
       await tester.pumpAndSettle();
-      final capturedEvent1 = verify(() => eventCapture.capture(captureAny())).captured;
+      final capturedEvent1 =
+          verify(() => eventCapture.capture(captureAny())).captured;
       expect(capturedEvent1, [event1]);
-      final capturedState1 = verify(() => stateCapture.capture(captureAny())).captured;
+      final capturedState1 =
+          verify(() => stateCapture.capture(captureAny())).captured;
       expect(capturedState1, [UiState(value: "Hello")]);
 
       final event2 = UiEvent(value: "Event");
@@ -110,7 +123,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(event1, event2);
-      final capturedEvent2 = verify(() => eventCapture.capture(captureAny())).captured;
+      final capturedEvent2 =
+          verify(() => eventCapture.capture(captureAny())).captured;
       expect(capturedEvent2, [event2]);
       verifyNever(() => stateCapture.capture(captureAny()));
     });
@@ -137,11 +151,13 @@ class UiState extends Equatable {
   List<Object?> get props => [value];
 }
 
-class _PageBlocCubit extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState> {
+class _PageBlocCubit
+    extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEvent, UiState> {
   _PageBlocCubit(super.initialState);
 
   @override
-  PageBlocState<UiEvent, UiState> createStateWithoutUIEvent(PageBlocState<UiEvent, UiState> state) {
+  PageBlocState<UiEvent, UiState> createStateWithoutUIEvent(
+      PageBlocState<UiEvent, UiState> state) {
     return PageBlocState<UiEvent, UiState>(uiState: state.uiState);
   }
 
@@ -150,11 +166,13 @@ class _PageBlocCubit extends PageBlocCubit<PageBlocState<UiEvent, UiState>, UiEv
   }
 
   void emitNewUiEvent(UiEvent event) {
-    emit(PageBlocState<UiEvent, UiState>(uiEvent: event, uiState: state.uiState));
+    emit(PageBlocState<UiEvent, UiState>(
+        uiEvent: event, uiState: state.uiState));
   }
 
   void emitNewUiState(UiState state) {
-    emit(PageBlocState<UiEvent, UiState>(uiEvent: this.state.uiEvent, uiState: state));
+    emit(PageBlocState<UiEvent, UiState>(
+        uiEvent: this.state.uiEvent, uiState: state));
   }
 }
 
@@ -171,7 +189,10 @@ class _TestWidget extends StatelessWidget {
   final UiEventCapture eventCapture;
   final UiStateCapture stateCapture;
 
-  const _TestWidget({required this.bloc, required this.eventCapture, required this.stateCapture});
+  const _TestWidget(
+      {required this.bloc,
+      required this.eventCapture,
+      required this.stateCapture});
 
   @override
   Widget build(BuildContext context) {
