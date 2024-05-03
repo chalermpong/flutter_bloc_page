@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unrelated_type_equality_checks
+// ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc_page/flutter_bloc_page.dart';
