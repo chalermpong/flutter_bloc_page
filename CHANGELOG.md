@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Update dependencies to flutter_bloc 8.0.0
+
 ## 2.0.0
 
 BREAKING CHANGE
